@@ -6,3 +6,103 @@ and comparison of redundant information.
 
 #Notable papers include:  https://paperswithcode.com/task/skeleton-based-action-recognition
 # Object detection and metrics https://github.com/rafaelpadilla/Object-Detection-Metrics
+
+Processes: To automatically overlay skeletal representations with fixed points on a series of images from multiple datasets,
+you can use a combination of computer vision and machine learning techniques. Here's a step-by-step guide on how to achieve this:
+
+Tools and Libraries Required
+OpenPose or MediaPipe: These are popular libraries for human pose estimation.
+OpenCV: For image processing.
+Python: The programming language to glue everything together.
+Steps
+Step 1: Install Necessary Libraries
+bash
+Copy code
+pip install opencv-python opencv-python-headless mediapipe
+If you prefer OpenPose, you'll need to follow the OpenPose installation guide.
+
+Step 2: Load Your Images
+Load your datasets into Python. Ensure that all images are accessible.
+
+python
+Copy code
+import cv2
+import os
+
+# Directory containing the images
+image_directory = 'path_to_your_images'
+
+# Load images
+images = [cv2.imread(os.path.join(image_directory, file)) for file in os.listdir(image_directory) if file.endswith(('.png', '.jpg', '.jpeg'))]
+Step 3: Use MediaPipe for Pose Estimation
+MediaPipe is simpler to set up compared to OpenPose.
+
+python
+Copy code
+import mediapipe as mp
+
+# Initialize MediaPipe Pose model
+mp_pose = mp.solutions.pose
+pose = mp_pose.Pose()
+
+def draw_pose(image, results):
+    mp_drawing = mp.solutions.drawing_utils
+    mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+    return image
+
+pose_images = []
+
+for image in images:
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    results = pose.process(image_rgb)
+    if results.pose_landmarks:
+        annotated_image = draw_pose(image.copy(), results)
+        pose_images.append(annotated_image)
+
+# Save or display the processed images
+for idx, pose_image in enumerate(pose_images):
+    cv2.imwrite(f'output_image_{idx}.jpg', pose_image)
+Step 4: Use OpenPose (Optional)
+If you choose to use OpenPose, follow their installation guide and use their Python API to process the images similarly.
+
+Step 5: Verify and Fine-tune
+Ensure the skeletal overlays are correctly applied. You might need to fine-tune the visualization depending on the dataset.
+
+Example Script with MediaPipe
+python
+Copy code
+import cv2
+import mediapipe as mp
+import os
+
+# Initialize MediaPipe Pose model
+mp_pose = mp.solutions.pose
+pose = mp_pose.Pose()
+mp_drawing = mp.solutions.drawing_utils
+
+# Directory containing the images
+image_directory = 'path_to_your_images'
+
+# Load images
+images = [cv2.imread(os.path.join(image_directory, file)) for file in os.listdir(image_directory) if file.endswith(('.png', '.jpg', '.jpeg'))]
+
+def draw_pose(image, results):
+    mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+    return image
+
+pose_images = []
+
+for image in images:
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    results = pose.process(image_rgb)
+    if results.pose_landmarks:
+        annotated_image = draw_pose(image.copy(), results)
+        pose_images.append(annotated_image)
+
+# Save or display the processed images
+for idx, pose_image in enumerate(pose_images):
+    cv2.imwrite(f'output_image_{idx}.jpg', pose_image)
+Summary
+This approach uses MediaPipe for pose estimation and OpenCV for image processing to overlay skeletal representations on images. 
+You can extend this script to handle more sophisticated requirements, such as batch processing large datasets, integrating with other libraries, 
+or adding more advanced visualization techniques.
