@@ -1,0 +1,8 @@
+#The purpose of this program/model is to develop a series of datasets while overlaying skeletal frames, the models in question will be skeletal based action recognition. 
+#A series of datasets will be taken (image and video data) and OpenPose will be used to configure the data with action points and skeletal frames over the humans
+#This will aid reducing the amount of computation needed for action/vision recognition and anticipate future movements of figures in real time 3-D space through analysis of 
+and comparison of redundant information. 
+
+
+#Notable papers include:  https://paperswithcode.com/task/skeleton-based-action-recognition
+# Object detection and metrics https://github.com/rafaelpadilla/Object-Detection-Metrics
