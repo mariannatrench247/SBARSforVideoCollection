@@ -1,0 +1,69 @@
+LOAD IMAGES
+
+import cv2
+import os
+
+# Directory containing the images
+image_directory = 'path_to_your_images'
+
+# Load images
+images = [cv2.imread(os.path.join(image_directory, file)) for file in os.listdir(image_directory) if file.endswith(('.png', '.jpg', '.jpeg'))]
+
+
+
+import mediapipe as mp
+
+# Initialize MediaPipe Pose model
+mp_pose = mp.solutions.pose
+pose = mp_pose.Pose()
+
+def draw_pose(image, results):
+    mp_drawing = mp.solutions.drawing_utils
+    mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+    return image
+
+pose_images = []
+
+for image in images:
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    results = pose.process(image_rgb)
+    if results.pose_landmarks:
+        annotated_image = draw_pose(image.copy(), results)
+        pose_images.append(annotated_image)
+
+# Save or display the processed images
+for idx, pose_image in enumerate(pose_images):
+    cv2.imwrite(f'output_image_{idx}.jpg', pose_image)
+
+
+import cv2
+import mediapipe as mp
+import os
+
+# Initialize MediaPipe Pose model
+mp_pose = mp.solutions.pose
+pose = mp_pose.Pose()
+mp_drawing = mp.solutions.drawing_utils
+
+# Directory containing the images
+image_directory = 'path_to_your_images'
+
+# Load images
+images = [cv2.imread(os.path.join(image_directory, file)) for file in os.listdir(image_directory) if file.endswith(('.png', '.jpg', '.jpeg'))]
+
+def draw_pose(image, results):
+    mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+    return image
+
+pose_images = []
+
+for image in images:
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    results = pose.process(image_rgb)
+    if results.pose_landmarks:
+        annotated_image = draw_pose(image.copy(), results)
+        pose_images.append(annotated_image)
+
+# Save or display the processed images
+for idx, pose_image in enumerate(pose_images):
+    cv2.imwrite(f'output_image_{idx}.jpg', pose_image)
